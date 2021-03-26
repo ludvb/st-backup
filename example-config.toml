@@ -1,0 +1,98 @@
+[server]
+# Configuration options for the API server
+
+# Directories to watch where files are backed up from
+# Required, string
+data-dirs =
+  [ {name = "sequencing-data", path = "/tmp/data/sequencer"}
+  , {name = "microscope-data", path = "/tmp/data/microscope"}
+  ]
+
+# Directory where files are restored to
+# Required, string
+restore-dir = "/tmp/data/restored"
+
+# Directory where files are moved to from `files-dir` after the backup is
+# completed
+# Required, string
+trash-dir = "/tmp/data/trash"
+
+# GPG receiver to encrypt archives for
+# Required, string
+gpg-receiver = "test"
+
+# GPG passphrase file
+# Optional, string
+gpg-passphrase-file = "/home/st-backup/passphrase-file"
+
+# Port to run the API server on
+# Required, integer
+port = 3001
+
+# Backup service
+# Required, one of:
+#  - tivoli: Tivoli Storage Manager
+backup-service = "tivoli"
+
+# Log level
+# Required, one of:
+#  - 0: Error
+#  - 1: Warning
+#  - 2: Info
+#  - 3: Debug
+log-level = 3
+
+# Log file. File contents will mirror stderr.
+# Optional, string
+log-file = "/tmp/log.txt"
+
+[server.smtp]
+# SMTP server settings for sending backup notifications
+
+# Required, string
+sender-name = "ST Backup"
+
+# Required, string
+sender-address = "sender@domain.tld"
+
+# Required, string
+host = "localhost"
+
+# Required, integer
+port = 465
+
+# Optional, string
+username = "username"
+
+# Optional, string
+password = "password"
+
+[server.tivoli]
+# Configuration options for the Tivoli Storage Manager backup service.
+
+# Storage volume mount point
+# Required, string
+storage-volume = "/home"
+
+# Storage location
+# Required, string
+storage-path = "st_data/backups"
+
+# Local SQLite database
+# Required, string
+local-database = "/tmp/database.sql"
+
+[web]
+# Configuration options for the web client server
+
+# Port to run the web client server on
+# Required, integer
+port = 3000
+
+# Log level
+# Required, one of:
+#  - 0: Error
+#  - 1: Warning
+#  - 2: Info
+#  - 3: Debug
+log-level = 3

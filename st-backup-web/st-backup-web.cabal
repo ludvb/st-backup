@@ -1,0 +1,106 @@
+cabal-version:      2.4
+
+name:               st-backup-web
+description:        ST Backup web interface
+version:            0.1.0.0
+
+
+flag release
+     description: Release build
+     default: False
+
+
+executable st-backup-web
+    hs-source-dirs:     src
+    main-is:            Main.hs
+
+    if flag(release)
+      ghc-options: -DRELEASE
+
+    if impl(ghcjs)
+        other-modules:
+            STBackup.Web
+            STBackup.Web.Req
+            STBackup.Web.Controller
+            STBackup.Web.Model
+            STBackup.Web.View
+        build-depends:
+            ghcjs-base
+    else
+        if flag(release)
+          buildable: False
+        else
+          other-modules:
+              STBackup.Web
+              STBackup.Web.CommandLineParser
+              STBackup.Web.Controller
+              STBackup.Web.Model
+              STBackup.Web.ProxySettings
+              STBackup.Web.Req
+              STBackup.Web.View
+          build-depends:
+            , bytestring
+            , http-client
+            , http-reverse-proxy
+            , jsaddle-warp
+            , wai
+            , warp
+            , websockets
+
+    ghc-options:
+      -O2 -threaded -Wall -rtsopts
+
+    ghcjs-options:
+      -dedupe -DGHCJS_GC_INTERVAL=5000
+
+    build-depends:
+      , base
+      , containers
+      , http-types
+      , jsaddle
+      , jsaddle-dom
+      , lens
+      , miso
+      , mtl
+      , optparse-applicative
+      , servant
+      , servant-jsaddle-streams
+      , split
+      , st-backup-shared
+      , text
+      , time
+      , transformers
+      , unordered-containers
+
+    default-language:   Haskell2010
+    default-extensions:
+      PatternSynonyms
+
+
+executable st-backup-web-server
+    hs-source-dirs:     src
+    main-is:            Server.hs
+    other-modules:      STBackup.Web.CommandLineParser
+                        STBackup.Web.ProxySettings
+
+    if !flag(release) || impl(ghcjs)
+       buildable: False
+
+    ghc-options:
+      -O2 -threaded -Wall -rtsopts
+
+    build-depends:
+      , base
+      , bytestring
+      , directory
+      , http-client
+      , http-reverse-proxy
+      , http-types
+      , optparse-applicative
+      , st-backup-shared
+      , wai
+      , warp
+
+    default-language:   Haskell2010
+    default-extensions:
+      PatternSynonyms

@@ -1,0 +1,6 @@
+dist*
+result*
+.ghc.environment*
+*hoo
+*warn
+.vscode

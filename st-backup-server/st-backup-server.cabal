@@ -1,0 +1,127 @@
+cabal-version:      3.0
+
+name:               st-backup-server
+description:        ST Backup API server
+version:            0.1.0.0
+
+
+library
+    hs-source-dirs:     src
+
+    exposed-modules:
+        STBackup.Backend.Database
+        STBackup.Backend.Database.Tivoli
+        STBackup.Backend.FileLocker
+        STBackup.Backend.FileLocker.Naive
+        STBackup.Common
+
+    build-depends:
+      , aeson
+      , base
+      , bytestring
+      , directory
+      , filepath
+      , lens
+      , mtl
+      , polysemy
+      , polysemy-plugin
+      , process
+      , regex-tdfa
+      , st-backup-shared
+      , sqlite-simple
+      , text
+      , time
+      , transformers
+      , unix
+
+    extra-libraries:    z
+
+    ghc-options:
+      -O2 -threaded -Wall -rtsopts
+      -fplugin=Polysemy.Plugin
+
+    default-language:
+      Haskell2010
+    default-extensions:
+      DataKinds
+      FlexibleContexts
+      GADTs
+      LambdaCase
+      PatternSynonyms
+      PolyKinds
+      RankNTypes
+      RecordWildCards
+      ScopedTypeVariables
+      TemplateHaskell
+      TypeApplications
+      TypeFamilies
+      TypeOperators
+
+
+executable st-backup-server
+    hs-source-dirs:     src-exe
+
+    main-is:            Main.hs
+    other-modules:      Backup
+                        Common
+                        Files
+                        Persons
+                        Projects
+                        Restore
+
+    ghc-options:
+      -fprint-potential-instances
+
+    build-depends:
+      , base
+      , bytestring
+      , containers
+      , directory
+      , exceptions
+      , filepath
+      , fused-effects
+      , hashable
+      , lens
+      , mime-mail
+      , mtl
+      , optparse-applicative
+      , polysemy
+      , polysemy-plugin
+      , pretty-simple
+      , process
+      , regex-tdfa
+      , servant
+      , servant-server
+      , smtp-mail
+      , st-backup-shared
+      , st-backup-server
+      , sqlite-simple
+      , temporary
+      , text
+      , time
+      , transformers
+      , unix
+      , warp
+
+    extra-libraries:    z
+
+    ghc-options:
+      -O2 -threaded -Wall -rtsopts
+      -fplugin=Polysemy.Plugin
+
+    default-language:
+      Haskell2010
+    default-extensions:
+      DataKinds
+      FlexibleContexts
+      GADTs
+      LambdaCase
+      PatternSynonyms
+      PolyKinds
+      RankNTypes
+      RecordWildCards
+      ScopedTypeVariables
+      TemplateHaskell
+      TypeApplications
+      TypeFamilies
+      TypeOperators

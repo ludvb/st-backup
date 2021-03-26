@@ -1,0 +1,58 @@
+#+TITLE: ST Backup
+
+A backup facility geared toward biology data.
+
+* Requirements
+
+- Nix (tested with version 2.4)
+- Docker (tested with version 20.10.7)
+- GnuPG (tested with version 2.2.28)
+
+* Configuration
+
+The file file:./example-config.toml contains an example configuration. Modify it as appropriate.
+
+* How to run
+
+#+BEGIN_SRC sh
+# Build components
+nix-build -A st-backup-server-docker -A st-backup-web-docker
+
+# Load docker containers
+docker load -i result
+docker load -i result-2
+
+# Make sure GPG daemon is running on host
+gpg-agent
+
+# Start API server
+# Note: This command needs to be changed depending on config
+docker run --read-only --user $(id -u):$(id -g) --tty \
+    -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 \
+    `# ^ Set locale to support UTF-8 character set` \
+    -p 3001:3001 \
+    `# ^ Bind API port` \
+    --mount type=bind,source=/data,target=/data \
+    `# ^ Mount data directory` \
+    --mount type=bind,source=/home/st-backup,target=/home/st-backup \
+    `# ^ Mount working directory` \
+    --mount type=bind,readonly=true,source=/path/to/config.toml,target=/config.toml \
+    `# ^ Mount config file` \
+    --mount type=bind,readonly=true,source=$HOME/.gnupg/,target=/.gnupg/ \
+    --mount type=bind,readonly=true,source=/run/user/$(id -u)/,target=/run/user/$(id -u)/ \
+    `# ^ Mount ~/.gnupg and /run/user/<user-id>, which contains gpg-agent socket` \
+    --mount type=bind,readonly=true,source=$DSM_DIR,target=/opt/tivoli/tsm/client/ba/bin/ \
+    `# ^ Mount $DSM_DIR (note: only needed for tivoli backend)` \
+    st-backup-server:latest -c /config.toml
+
+# Start web server
+# Note: This command needs to be changed depending on config
+docker run --read-only --user $(id -u):$(id -g) --tty \
+    -e LANG=C.UTF-8 -e LC_ALL=C.UTF-8 \
+    `# ^ Set locale to support UTF-8 character set` \
+    --network="host" \
+    `# ^ Allow communication with API server` \
+    --mount type=bind,source=/path/to/config.toml,target=/config.toml \
+    `# ^ Mount config file` \
+    st-backup-web:latest -c /config.toml
+#+END_SRC

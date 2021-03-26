@@ -1,0 +1,58 @@
+cabal-version:      2.4
+
+name:               st-backup-shared
+description:        ST Backup API
+version:            0.1.0.0
+
+
+library
+    hs-source-dirs:     src
+    exposed-modules:    STBackup.API
+                        STBackup.API.Types.Field
+                        STBackup.Config
+                        STBackup.Logging
+                        STBackup.Logging.Core
+
+    if impl(ghcjs)
+      build-depends:
+        , jsaddle
+    else
+      exposed-modules:
+          STBackup.Logging.Effect
+          STBackup.Config.Toml
+      build-depends:
+        , polysemy
+        , tomland
+
+    build-depends:
+      , aeson
+      , ansi-terminal
+      , base
+      , containers
+      , exceptions
+      , hashable
+      , lens
+      , mtl
+      , servant
+      , text
+      , time
+      , transformers
+
+    default-language:
+      Haskell2010
+    default-extensions:
+      ConstraintKinds
+      DataKinds
+      FlexibleContexts
+      GADTs
+      LambdaCase
+      MultiParamTypeClasses
+      PatternSynonyms
+      PolyKinds
+      RankNTypes
+      RecordWildCards
+      ScopedTypeVariables
+      TemplateHaskell
+      TypeApplications
+      TypeFamilies
+      TypeOperators

@@ -1,0 +1,4 @@
+packages:
+  st-backup-server/
+  st-backup-shared/
+  st-backup-web/
